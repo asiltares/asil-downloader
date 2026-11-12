@@ -1,0 +1,81 @@
+{
+  "manifest_version": 3,
+  "name": "asil-downloader",
+  "version": "1.0.0",
+  "description": "Download videos, audio, subtitles and images from any browser tab in the quality you choose. Made by asiltares: github.com/asiltares",
+  "homepage_url": "https://github.com/asiltares/asil-downloader",
+  "permissions": [
+    "nativeMessaging",
+    "activeTab",
+    "tabs",
+    "notifications",
+    "scripting",
+    "downloads",
+    "contextMenus",
+    "cookies",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_title": "asil-downloader",
+    "default_icon": {
+      "16": "src/icons/icon16.png",
+      "32": "src/icons/icon32.png",
+      "48": "src/icons/icon48.png",
+      "128": "src/icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "src/icons/icon16.png",
+    "32": "src/icons/icon32.png",
+    "48": "src/icons/icon48.png",
+    "128": "src/icons/icon128.png"
+  },
+  "host_permissions": [
+    "*://*.instagram.com/*",
+    "*://*.x.com/*",
+    "*://*.twitter.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.instagram.com/*"
+      ],
+      "js": [
+        "src/ig-hook.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*",
+        "https://mobile.x.com/*",
+        "https://mobile.twitter.com/*"
+      ],
+      "js": [
+        "src/i18n.js",
+        "src/x-helper.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/popup.html",
+        "src/popup.css",
+        "src/popup.js",
+        "src/i18n.js",
+        "src/icons/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAscqBFIyOFo75yed4PdYOYkG1N+WlhoqTanL/ZM2gVvWygxL9Lq1uaAupfQi9uhUbXd8i55OoYyUb32qe9z5cxcSFzJMsCu5wQ/L3QiBPO5o2v0aZyKzHq4XZiDkmj+QalO90uwOFO0L+brJKqx+zw/T3MXsrPfe3vRlz/UxPLVxg0vEQYci4Az5kASBKmzY4Jwb/PzPB4dd5oSdhBG//aBDMIS6h6kWgKAdydU7znncda2NBSlS5T9W2WekitTmiZbuJhjI/ALxVYjF60mUVWrmyOE37s48nnG+tvN7I0lbvLxo6F3+MtLx5Jwaniflkycpt+W10syQSPSeHzRPHiwIDAQAB"
+}

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="icons/icon48.png" alt="">
+    <h1>asil-downloader</h1>
+    <button id="btn-close" class="icon" title="Kapat" aria-label="Kapat" hidden><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  </header>
+
+  <form id="url-form" class="url-row" autocomplete="off">
+    <input id="url-input" type="text" inputmode="url" spellcheck="false" placeholder="URL yapıştır ve Enter'a bas" aria-label="İndirilecek URL">
+    <button type="button" id="url-clear" class="icon" title="Bu sayfaya dön" aria-label="Bu sayfaya dön" hidden><svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    <button type="submit" id="url-go">Getir</button>
+  </form>
+  <p id="url-status" class="muted" hidden></p>
+
+  <section id="view-loading">
+    <div class="spinner"></div>
+    <p class="muted">Video bilgisi alınıyor…</p>
+  </section>
+
+  <section id="view-ready" hidden>
+    <div class="media">
+      <img id="thumb" alt="">
+      <div class="media-text">
+        <p id="title"></p>
+        <p id="meta" class="muted" hidden></p>
+      </div>
+    </div>
+    <div class="picker-group">
+      <div class="row">
+        <div class="field">
+          <span class="field-label" id="video-label">Video (MP4)</span>
+          <button type="button" class="picker" id="video-picker" aria-expanded="false"></button>
+        </div>
+        <button id="btn-video">İndir</button>
+      </div>
+      <div class="menu" id="video-menu" role="listbox"></div>
+    </div>
+    <div class="picker-group" id="audio-group">
+      <div class="row">
+        <div class="field">
+          <span class="field-label">Ses</span>
+          <button type="button" class="picker" id="audio-picker" aria-expanded="false"></button>
+        </div>
+        <button id="btn-audio">İndir</button>
+      </div>
+      <div class="menu" id="audio-menu" role="listbox"></div>
+    </div>
+    <div class="picker-group" id="lang-group" hidden>
+      <div class="row">
+        <div class="field">
+          <span class="field-label">Ses dili</span>
+          <button type="button" class="picker" id="lang-picker" aria-expanded="false"></button>
+        </div>
+      </div>
+      <div class="menu" id="lang-menu" role="listbox"></div>
+    </div>
+    <div class="picker-group" id="sub-group" hidden>
+      <div class="row">
+        <div class="field">
+          <span class="field-label">Altyazı / yazıya dökme (SRT)</span>
+          <button type="button" class="picker" id="sub-picker" aria-expanded="false"></button>
+        </div>
+        <button id="btn-sub">İndir</button>
+      </div>
+      <div class="menu" id="sub-menu" role="listbox"></div>
+    </div>
+    <div class="range" id="range-group">
+      <div class="range-head">
+        <span>Aralık <span class="muted">(isteğe bağlı)</span></span>
+        <span id="range-duration" class="muted"></span>
+      </div>
+      <div class="range-fields" id="range-fields">
+        <label class="range-field">
+          <span>Başlangıç</span>
+          <input id="range-start" inputmode="numeric" placeholder="0:00" autocomplete="off">
+        </label>
+        <span class="range-dash">–</span>
+        <label class="range-field">
+          <span>Bitiş</span>
+          <input id="range-end" inputmode="numeric" placeholder="sona kadar" autocomplete="off">
+        </label>
+      </div>
+      <p id="range-hint" class="muted" hidden></p>
+    </div>
+    <button id="btn-all" class="secondary" hidden></button>
+    <p id="story-status" class="muted" hidden></p>
+  </section>
+
+  <section id="view-downloading" hidden>
+    <p id="dl-title" class="clamp"></p>
+    <div class="bar"><div id="bar-fill"></div></div>
+    <p id="dl-stats" class="muted"></p>
+    <button id="btn-cancel" class="secondary">İptal</button>
+  </section>
+
+  <section id="view-done" hidden>
+    <p class="ok">Tamamlandı</p>
+    <p id="done-path" class="path"></p>
+    <button id="btn-share">Telefona gönder</button>
+    <div id="share-box" class="share" hidden>
+      <div class="segmented" role="tablist">
+        <button type="button" id="share-tab-ios" role="tab">iPhone · Fotoğraflar</button>
+        <button type="button" id="share-tab-file" role="tab">Dosya olarak</button>
+      </div>
+      <img id="share-qr" alt="Telefonla okutulacak QR kod">
+      <p id="share-hint" class="muted"></p>
+      <details id="share-setup" class="setup">
+        <summary>iPhone kestirmesini kur (bir kez)</summary>
+        <ol>
+          <li><b>Kestirmeler</b> uygulamasını aç, sağ üstteki <b>+</b>'ya bas.</li>
+          <li>Adını tam olarak <b>asil-downloader</b> koy.</li>
+          <li><b>Eylem Ekle</b> → <b>URL'nin İçeriğini Al</b> ekle. URL olarak <b>Kestirme Girdisi</b>'ni seç.</li>
+          <li><b>Fotoğraf Albümüne Kaydet</b> eylemini ekle (Albüm: Son Öğeler).</li>
+          <li>Bitti. İlk çalıştırmada <b>Yerel Ağ</b> ve <b>Fotoğraflar</b> izinlerine <b>İzin Ver</b> de.</li>
+        </ol>
+      </details>
+      <p id="share-url" class="path"></p>
+    </div>
+    <p id="share-error" class="err" hidden></p>
+    <button id="btn-back-done" class="secondary">Geri</button>
+  </section>
+
+  <section id="view-error" hidden>
+    <p id="error-msg" class="err"></p>
+    <button id="btn-back-error" class="secondary">Tekrar dene</button>
+  </section>
+
+  <section id="images" hidden>
+    <div class="images-head">
+      <span>Resim</span>
+      <span id="image-meta" class="muted"></span>
+    </div>
+    <div id="image-list" class="thumbs"></div>
+    <button id="btn-image">Resmi indir</button>
+    <p id="image-status" class="muted" hidden></p>
+  </section>
+
+  <script src="i18n.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
